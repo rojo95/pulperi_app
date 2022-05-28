@@ -1,0 +1,197 @@
+.nav-icon {
+    color:#878c96;
+}
+.uppercase {
+    text-transform: uppercase;
+}
+
+.lista-corta {
+    max-height: 200px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+.lista-corta-solida {
+    min-height: 200px;
+}
+
+.sidebar-custom {
+    position: absolute;
+    left:48px;
+    border-radius:20px;
+    padding: 4px;
+}
+
+.alerta {
+    position: fixed;
+    z-index: 3 !important;
+    bottom: 0px;
+    right: 10px;
+    width: 50%;
+}
+
+a.close,p.alerta {
+    position: relative !important;
+}
+
+#opened-menu{
+    position: fixed !important;
+    right: -15px !important;
+}
+
+span.text-danger.required {
+    position: absolute !important;
+    top: 10px !important;
+    right: 0px;
+    z-index: 999999;
+    font-size: 25px !important;
+    opacity: .5;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+}
+
+.permisos {
+    margin: 0 auto;
+}
+
+.vertical-m {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+}
+
+.second-level{
+    padding-left: 10px !important;
+}
+
+.second-level a, .second-level i, .second-level span{
+    color: #3c4858 !important;
+}
+
+.second-level.active a, .second-level.active i, .second-level.active span{
+    color: #FFFFFF !important;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.popover-content {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute !important;
+    background-color: #ffffff;
+    z-index: 1000;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    transform: translate(0, 10px);
+    padding: 1.5rem;
+    width: auto;
+    border-radius: 5px;
+    top: 25px !important;
+}
+.popover-direction-l {
+    right: 30%;
+}
+
+.arrow-before {
+    width:0px;
+    height:0px;
+    border-left: 8px solid transparent;  /* izquierda flecha */
+    border-right: 8px solid transparent; /* derecha flecha */
+    border-bottom: 8px solid #dadada; /* base flecha y color*/
+    font-size:0px;
+    line-height:0px;
+    top: -8px;
+    right: 3px;
+    position: absolute;
+}
+.arrow-after {
+    width:0px;
+    height:0px;
+    border-left: 8px solid transparent;  /* izquierda flecha */
+    border-right: 8px solid transparent; /* derecha flecha */
+    border-bottom: 8px solid white; /* base flecha y color*/
+    font-size:0px;
+    line-height:0px;
+    top: -6px;
+    right: 3px;
+    position: absolute;
+}
+
+.popover-content.active {
+    z-index: 10;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, 20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.div-select{
+    z-index: 1;
+    top: -20px;
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+/* Spinner puro css */
+.lds-hourglass {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-hourglass:after {
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    width: 0;
+    height: 0;
+    margin: 8px;
+    box-sizing: border-box;
+    border: 32px solid #9f38b4;
+    border-color: transparent #9f38b4 transparent #9f38b4;
+    animation: lds-hourglass 1.2s infinite;
+  }
+  @keyframes lds-hourglass {
+    0% {
+      transform: rotate(0);
+      animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    }
+    50% {
+      transform: rotate(900deg);
+      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    100% {
+      transform: rotate(1800deg);
+    }
+}
+
+
+@media all and (max-width:560px) {
+    .custom-class { width: 100%; display:block; }
+ }
+
+.mayus {
+    text-transform: uppercase;
+}
+
+div.modal#reg form#create_client label h4.mtn-5{
+    margin-bottom: -10px !important;
+}
+
+.loading-body {
+    background-color: #ffffff;
+    width: 100% !important;
+    height: 100% !important;
+    left: 0px !important;
+    right: 0px !important;
+    display: flex;
+    align-content: center;
+    z-index: 10000;
+    position: fixed;
+}
+
+.loading-body div.lds-hourglass {
+    position: absolute;
+    bottom: 50%;
+    /* top: 50%; */
+    left: 50%;
+}
