@@ -97,7 +97,8 @@ Route::middleware(['valAuth'])->group(function(){
 
 
         Route::get('/settings', [SettingsController::class,'index'])->name('settings.index');
-        Route::get('/config', [SettingsController::class,'update'])->name('settings.config');
+        Route::get('/config', [SettingsController::class,'edit'])->name('settings.config');
+        Route::put('/config', [SettingsController::class,'update'])->name('settings.config');
 
 
 

@@ -62,7 +62,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
                     <a class="dropdown-item" href="{{route('prfl.show')}}">Perfil</a>
-                    <a class="dropdown-item" href="#">Ajustes</a>
+                    <a class="dropdown-item" href="{{route('settings.index')}}">Ajustes</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">{{ __('Cerrar Sesión') }}</a>
                 </div>

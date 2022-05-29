@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Configuration;
+use App\Models\CurrencyExchange;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -12,8 +13,16 @@ class SettingsController extends Controller
         return view('settings.index');
     }
 
-    public function update() {
+    public function edit() {
         $settings = Configuration::all();
-        return view('settings.update',compact('settings'));
+        $divisas = CurrencyExchange::where('status',true);
+        return view('settings.edit',compact('settings','divisas'));
     }
+
+    public function update(Request $request)
+    {
+        dd($request->all());
+    }
+
+
 }

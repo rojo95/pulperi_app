@@ -14,7 +14,7 @@
                             </div>
                         </div>
                     </div>
-                    <form action="">
+                    <form action="{{route('settings.config')}}" method="post">
                         @csrf
                         @method('PUT')
                         <div class="card-body">
@@ -59,6 +59,11 @@
                                             </div>
                                             <div class="col-12">
                                                 <input disabled placeholder="Límite permitido para la deuda" step="0.01" name="limit_amount" id="limit_amount" type="number" class="form-control">
+                                                <select name="divisa" id="divisa">
+                                                    @foreach ($divisas as $divisa)
+                                                    <option value="{{$divisa->id}}">{{$divisa->description}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -72,7 +77,7 @@
                                         <button type="button" class="btn btn-info btn-back col-md-6">Volver</button>
                                     </div>
                                     <div class="col-sm-6 text-left">
-                                        <button type="submit" class="btn btn-primary col-md-6">Concretar Venta</button>
+                                        <button type="submit" class="btn btn-primary col-md-6">Actualizar</button>
                                     </div>
                                 </div>
                             </div>
