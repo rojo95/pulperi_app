@@ -6,17 +6,32 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary d-flex">
-                        <div class="col-sm-10">
-                            <h4 class="card-title">Ventas</h4>
-                            <p class="card-category">Transacciones realizadas.</p>
-                        </div>
-                        <div class="col-sm-2">
-                            @can('sale_create')
-                            <a class="nav-link" href="{{ route('sls.create') }}" title="Crear nuevo permiso">
-                                <button class="btn btn-secondary"><i class="material-icons">attach_money</i></button>
-                            </a>
-                            @endcan
+                    <div class="card-header card-header-primary header-search-md">
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <h4 class="card-title">Ventas</h4>
+                                <p class="card-category">Transacciones realizadas.</p>
+                            </div>
+                            <div class="col-md-5 align-right">
+                                <form action="{{route('sls.index')}}">
+                                    <div class="group-txt">
+                                        <input type="text" name="search" id="search" class="input-group-left" autocomplete="off" placeholder="Venta" value="{{$info}}">
+                                        @can('sale_create')
+                                            <button class="btn btn-secondary btn-group-center" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <a class="btn btn-secondary btn-group-right" href="{{ route('sls.create') }}" title="Registrar Nueva Venta">
+                                                <i class="material-icons">attach_money</i>
+                                            </a>
+                                        @endcan
+                                        @cannot('sale_create')
+                                            <a class="btn btn-secondary btn-group-right" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        @endcannot
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -37,7 +52,7 @@
                                     <tr>
                                         <td>{{$sale->created_at->format('d/m/y h:i A')}}</td>
                                         <td>{{$sale->client->name.' '.$sale->client->lastname}}</td>
-                                        <td>{{$sale->transaction_type==1 ? 'Venta de Contado' : 'Venta a Crédito'}}</td>
+                                        <td>{{$sale->type}}</td>
                                         <td>@php
                                             $totalbs = 0;
                                             $totalusd = 0;

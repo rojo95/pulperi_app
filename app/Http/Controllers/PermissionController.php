@@ -25,11 +25,16 @@ class PermissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $res)
     {
+        $info = $res->search;
         abort_if(Gate::denies('permission_index'),403);
-        $permissions = Permission::orderBy('id','asc')->paginate(5);
-        return view('permissions.index',compact('permissions'));
+        $permissions = Permission::
+            whereRaw("unaccent(name) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(to_char(created_at, 'dd/mm/yy HH12:MI AM')) ILIKE unaccent('%".$info."%')")
+            ->orderBy('id','asc')
+            ->paginate(5);
+        return view('permissions.index',compact('permissions','info'));
     }
 
     /**

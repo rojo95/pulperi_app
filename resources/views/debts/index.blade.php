@@ -6,10 +6,22 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary d-flex">
-                        <div class="col-sm-10">
-                            <h4 class="card-title">Cuentas por Cobrar</h4>
-                            <p class="card-category">Información básica de las cuentas por cobrar a los clientes</p>
+                    <div class="card-header card-header-primary header-search">
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <h4 class="card-title">Cuentas por Cobrar</h4>
+                                <p class="card-category">Información básica de las cuentas por cobrar a los clientes</p>
+                            </div>
+                            <div class="col-md-5">
+                                <form action="{{route('dbts.index')}}">
+                                    <div class="group-txt">
+                                        <input type="text" name="search" id="search" class="input-group-left" autocomplete="off" placeholder="Cliente" value="{{$info}}">
+                                        <button class="btn btn-secondary btn-group-right">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">

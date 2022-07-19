@@ -26,8 +26,8 @@ class Lot extends Model
         return $this->hasMany(LotToDiscount::class);
     }
 
-    // Relación muchos a muchos con los productos
+    // Relación con su producto
     public function products() {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsTo(Product::class,'id');
     }
 }

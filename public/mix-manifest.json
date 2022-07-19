@@ -5,6 +5,7 @@
     "/js/solid.js": "/js/solid.js",
     "/js/brands.js": "/js/brands.js",
     "/js/bootstrap-select.js": "/js/bootstrap-select.js",
+    "/js/chart.min.js": "/js/chart.min.js",
     "/css/app.css": "/css/app.css",
     "/css/bootstrap.css": "/css/bootstrap.css"
 }

@@ -28,10 +28,20 @@ class DebtController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $res)
     {
-        $debts = Debt::all();
-        return view('debts.index',compact('debts'));
+        $info = $res->search;
+        $debts = Debt::
+            select('debts.*')
+            ->join('clients AS a','debts.client_id','a.id')
+            ->whereRaw("unaccent(name) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(lastname) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(address) ILIKE unaccent('%".$info."%')")
+            ->orWhere('ced', 'ILIKE', $info)
+            ->orWhereRaw("unaccent(to_char(debts.created_at, 'dd/mm/yy HH12:MI AM')) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(CASE WHEN debts.status=1 THEN 'activo' ELSE 'inactivo' END) ILIKE unaccent('%".$info."%')")
+            ->get();
+        return view('debts.index',compact('debts','info'));
     }
 
     /**

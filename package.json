@@ -26,6 +26,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.4",
         "bootstrap-select": "^1.13.18",
+        "chart.js": "^3.8.0",
         "sweetalert2": "^11.1.4"
     }
 }

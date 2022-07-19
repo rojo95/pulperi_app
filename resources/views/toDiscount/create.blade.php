@@ -137,8 +137,8 @@
         <div class="modal-header">
           <h4 class="modal-title" id="searchProdLabel">
               <div class="row">
-                  <div class="col-sm-4 text-primary">Producto: </div>
-                  <div class="prod-modal col-sm-8"></div>
+                  <div class="col-sm-5 text-primary">Producto: </div>
+                  <div class="prod-modal col-sm-7"></div>
                 </div>
             </h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -172,7 +172,7 @@
             </div>
             <div class="row mb-3">
                 <div class="col-sm-5">
-                    <label for="reason" class="col-form-label">Descripción detallada de la razón:</label>
+                    <label for="reason" class="col-form-label">Cantidad a Retirar del Inventario:</label>
                 </div>
                 <div class="col-sm-7">
                     <input type='number' name="quantity" id="quantity" class="form-control" min="1" max="" value="1">

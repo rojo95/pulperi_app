@@ -15,75 +15,72 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         $permissions = [
-            'configuration_index',
-            'configuration_create',
-            'configuration_show',
-            'configuration_edit',
-            'configuration_destroy',
+            ['name'=>'configuration_index', 'desc'=>'Permiso de visualización de ventana de configuración.'],
+            ['name'=>'configuration_create', 'desc'=>'Permiso de visualización de ventana de crear configuración.'],
+            ['name'=>'configuration_show', 'desc'=>'Permiso de visualización de ventana para mostrar configuración.'],
+            ['name'=>'configuration_edit', 'desc'=>'Permiso de visualización de ventana de edición de datos de configuración.'],
+            ['name'=>'configuration_destroy', 'desc'=>'Permiso para deshabilitar/habilitar configuración.'],
 
-            'permission_index',
-            'permission_create',
-            'permission_show',
-            'permission_edit',
-            'permission_destroy',
+            ['name'=>'permission_index', 'desc'=>'Permiso de visualización de ventana de visualización de permisos.'],
+            ['name'=>'permission_create', 'desc'=>'Permiso de visualización de ventana para crear permisos.'],
+            ['name'=>'permission_show', 'desc'=>'Permiso de visualización de ventana para mostrar información del permiso.'],
+            ['name'=>'permission_edit', 'desc'=>'Permiso de visualización de ventana de edición del permiso.'],
+            ['name'=>'permission_destroy', 'desc'=>'Permiso para deshabilitar/habilitar permiso.'],
 
-            'role_index',
-            'role_create',
-            'role_show',
-            'role_edit',
-            'role_destroy',
+            ['name'=>'role_index', 'desc'=>'Permiso de visualización de ventana de lista de roles.'],
+            ['name'=>'role_create', 'desc'=>'Permiso de visualización de ventana de creación de roles.'],
+            ['name'=>'role_show', 'desc'=>'Permiso de visualización de ventana de información completa de los roles.'],
+            ['name'=>'role_edit', 'desc'=>'Permiso de visualización de ventana de edición de los datos de los roles.'],
+            ['name'=>'role_destroy', 'desc'=>'Permiso para deshabilitar/habilitar rol.'],
 
-            'user_indexUsers',
-            'user_createUser',
-            'user_showUser',
-            'user_editUser',
-            'user_statusUser',
+            ['name'=>'user_indexUsers', 'desc'=>'Permiso de visualización de ventana de lista de usuarios'],
+            ['name'=>'user_createUser', 'desc'=>'Permiso de visualización de ventana de creación de usuarios.'],
+            ['name'=>'user_showUser', 'desc'=>'Permiso de visualización de ventana para mostrar datos detallados de usuario.'],
+            ['name'=>'user_editUser', 'desc'=>'Permiso de visualización de ventana de edición de datos de usuario.'],
+            ['name'=>'user_statusUser', 'desc'=>'Permiso para deshabilitar/habilitar usuario.'],
 
-            'inventory_index',
-            'inventory_create',
-            'inventory_show',
-            'inventory_edit',
-            'inventory_destroy',
+            ['name'=>'inventory_index', 'desc'=>'Permiso de visualización de ventana de lista de productos en inventario.'],
+            ['name'=>'inventory_create', 'desc'=>'Permiso de visualización de ventana de creación de producto para el inventario.'],
+            ['name'=>'inventory_show', 'desc'=>'Permiso de visualización de ventana de información detallada de producto.'],
+            ['name'=>'inventory_edit', 'desc'=>'Permiso de visualización de ventana de edición de información de producto en inventario.'],
+            ['name'=>'inventory_destroy', 'desc'=>'Permiso para deshabilitar/habilitar producto del inventario.'],
 
-            'client_index',
-            'client_create',
-            'client_show',
-            'client_edit',
-            'client_destroy',
+            ['name'=>'client_index', 'desc'=>'Permiso de visualización de ventana de lista de clientes.'],
+            ['name'=>'client_create', 'desc'=>'Permiso de visualización de ventana de creación de clientes.'],
+            ['name'=>'client_show', 'desc'=>'Permiso de visualización de ventana de información del cliente.'],
+            ['name'=>'client_edit', 'desc'=>'Permiso de visualización de ventana de edición de información del cliente.'],
+            ['name'=>'client_destroy', 'desc'=>'Permiso para deshabilitar/habilitar cliente.'],
 
-            'sale_index',
-            'sale_create',
-            'sale_show',
-            'sale_destroy',
+            ['name'=>'sale_index', 'desc'=>'Permiso de visualización de ventana de ventas realizadas.'],
+            ['name'=>'sale_create', 'desc'=>'Permiso de visualización de ventana de registro de venta.'],
+            ['name'=>'sale_show', 'desc'=>'Permiso de visualización de ventana para mostrar la información de la venta.'],
+            ['name'=>'sale_destroy', 'desc'=>'Permiso para anular venta.'],
 
-            'report_index',
-            'report_show',
+            ['name'=>'report_index', 'desc'=>'Permiso de visualización de ventana de reportes.'],
+            ['name'=>'report_show', 'desc'=>'Permiso de visualización de ventana de detalles de reportes.'],
 
-            'debts_index',
-            'debts_show',
-            'debts_pay',
-            'debts_destroy',
+            ['name'=>'debts_index', 'desc'=>'Permiso de visualización de ventana de lista de deudas.'],
+            ['name'=>'debts_show', 'desc'=>'Permiso de visualización de ventana de información completa de la deuda.'],
+            ['name'=>'debts_pay', 'desc'=>'Permiso de visualización de ventana de pago de la deuda.'],
+            ['name'=>'debts_destroy', 'desc'=>'Permiso para anular deuda.'],
 
-            'lot_index',
-            'lot_create',
-            'lot_show',
-            'lot_destroy',
+            ['name'=>'lot_index', 'desc'=>'Permiso de visualización de ventana de lista de lotes.'],
+            ['name'=>'lot_create', 'desc'=>'Permiso de visualización de ventana de creación de lote nuevo.'],
+            ['name'=>'lot_show', 'desc'=>'Permiso de visualización de ventana para mostrar información del lote.'],
+            ['name'=>'lot_destroy', 'desc'=>'Permiso para deshabilitar/habilitar lote.'],
 
-            'to_discount_index',
-            'to_discount_create',
-            'to_discount_show',
-            'to_discount_destroy',
+            ['name'=>'to_discount_index', 'desc'=>'Permiso de visualización de ventana de descuento del inventario.'],
+            ['name'=>'to_discount_create', 'desc'=>'Permiso de visualización de ventana de descuento del inventario.'],
+            ['name'=>'to_discount_show', 'desc'=>'Permiso de visualización de ventana de descuento del inventario.'],
+            ['name'=>'to_discount_destroy', 'desc'=>'Permiso para anular descuento de inventario.'],
 
-            'config_index',
-            'config_create',
-            'config_show',
-            'config_edit',
-            'config_destroy',
+
         ];
 
         foreach ($permissions as $permission) {
             Permission::create([
-                'name' => $permission
+                'name' => $permission['name'],
+                'description' => $permission['desc']
             ]);
         }
     }

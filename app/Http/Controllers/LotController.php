@@ -135,7 +135,7 @@ class LotController extends Controller
     }
 
     public function showExpiring(){
-        $lots = Lot::with('products')->whereBetween('expiration',[Carbon::now()->format('Y-m-d'),Carbon::now()->add(30, 'day')->format('Y-m-d')])->where('status',true)->get();
+        $lots = Lot::with('products')->where('expiration','<',now())->orWhereBetween('expiration',[Carbon::now()->format('Y-m-d'),Carbon::now()->add(30, 'day')->format('Y-m-d')])->where('status',true)->get();
         return response()->json($lots);
     }
 }

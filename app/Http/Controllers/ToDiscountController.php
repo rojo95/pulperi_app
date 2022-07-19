@@ -31,10 +31,23 @@ class ToDiscountController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $res)
     {
-        $discounts = toDiscount::orderBy('id','desc')->paginate(5);
-        return view('toDiscount.index',compact('discounts'));
+        $info = $res->search;
+        $discounts = toDiscount::
+            select('to_discounts.*')
+            ->join('users AS a','a.id','to_discounts.user_id')
+            ->join('profiles AS b','b.user_id','a.id')
+            ->join('type_to_discounts AS c','to_discounts.type_to_discount_id','c.id')
+            ->whereRaw("unaccent(a.email) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(a.username) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(b.name) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(b.lastname) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(c.description) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(to_char(to_discounts.created_at,'dd/mm/yy HH12:MI AM')) ILIKE unaccent('%".$info."%')")
+            ->orderBy('id','desc')
+            ->paginate(5);
+        return view('toDiscount.index',compact('discounts','info'));
     }
 
     /**
@@ -170,7 +183,7 @@ class ToDiscountController extends Controller
     }
 
     public function productByIdLot($id) {
-        $product = Lot::where('cod_lot',$id)->where('status',true)->with('products')->get();
+        $product = Lot::where('cod_lot',$id)->where('status',true)->with('products')->first();
         $var     = response()->json($product);
         return $var;
     }

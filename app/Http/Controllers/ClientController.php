@@ -26,14 +26,27 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $res)
     {
+        $info = $res->search;
         if (Gate::allows('client_destroy')) {
-            $clients = Client::paginate(5);
+            $clients = Client::
+                whereRaw("unaccent(name) ILIKE unaccent('%".$info."%')")
+                ->orWhereRaw("unaccent(lastname) ILIKE unaccent('%".$info."%')")
+                ->orWhereRaw("unaccent(lastname) ILIKE unaccent('%".$info."%')")
+                ->orWhereRaw("CAST(ced AS TEXT) ilike '%".$info."%'")
+                ->orWhereRaw("unaccent(CASE WHEN status=true THEN 'activo' ELSE 'inactivo' END) ILIKE unaccent('%".$info."%')")
+                ->paginate(5);
         } else {
-            $clients = Client::where('status',true)->paginate(5);
+            $clients = Client::
+                where('status',true)
+                ->whereRaw("unaccent(name) ILIKE unaccent('%".$info."%')")
+                ->orWhereRaw("unaccent(lastname) ILIKE unaccent('%".$info."%')")
+                ->orWhereRaw("CAST(ced AS TEXT) ilike '%".$info."%'")
+                ->orWhereRaw("unaccent(CASE WHEN status=true THEN 'activo' ELSE 'inactivo' END) ILIKE unaccent('%".$info."%')")
+                ->paginate(5);
         }
-        return view('clients.index',compact('clients'));
+        return view('clients.index',compact('clients','info'));
     }
 
     /**

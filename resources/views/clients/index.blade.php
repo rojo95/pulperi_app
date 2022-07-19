@@ -6,17 +6,32 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary d-flex">
-                        <div class="col-sm-10">
-                            <h4 class="card-title">Clientes</h4>
-                            <p class="card-category">Clientes registrados.</p>
-                        </div>
-                        <div class="col-sm-2">
-                            @can('client_create')
-                            <a class="nav-link" href="{{ route('clnts.create') }}" title="Agregar nuevo cliente">
-                                <button class="btn btn-secondary"><i class="material-icons">group_add</i></button>
-                            </a>
-                            @endcan
+                    <div class="card-header header-search-sm card-header-primary">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="card-title">Clientes</h4>
+                                <p class="card-category d-none d-md-block">Clientes registrados.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <form action="{{route('clnts.index')}}">
+                                    <div class="group-txt">
+                                        <input type="text" name="search" id="search" class="input-group-left" autocomplete="off" placeholder="Cliente" value="{{$info}}">
+                                        @can('client_create')
+                                            <button class="btn btn-secondary btn-group-center" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <a class="btn btn-secondary btn-group-right" href="{{ route('clnts.create') }}" title="Agregar nuevo cliente" >
+                                                <i class="material-icons">group_add</i>
+                                            </a>
+                                        @endcan
+                                        @cannot('client_create')
+                                            <button class="btn btn-secondary btn-group-right">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        @endcannot
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -104,7 +119,7 @@
                                     @empty
                                         <tr>
                                             <td colspan="4">
-                                                No hay clientes registrados aún...
+                                                No se han encontrado registros...
                                             </td>
                                         </tr>
                                     @endforelse

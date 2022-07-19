@@ -16,13 +16,14 @@ class DivisasSeeder extends Seeder
     {
 
         $divisas = [
-            'Bolívares',
-            'Dólares',
+            ['name'=>'Bolívares','exchange'=>5.5],
+            ['name'=>'Dólares','exchange'=>1],
         ];
 
         foreach ($divisas as $divisa) {
             Divisas::create([
-                'name' => $divisa
+                'name' => $divisa['name'],
+                'exchange' => $divisa['exchange'],
             ]);
         }
     }

@@ -43,7 +43,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown d-none d-sm-none d-md-block">
-                <a class="nav-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link" href="{{route('ntfctns')}}" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="material-icons">notifications</i>
                     <p class="d-lg-none d-md-block notif">
                         Notificaciones
@@ -61,7 +61,7 @@
                     </p>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                    <a class="dropdown-item" href="{{route('prfl.show')}}">Perfil</a>
+                    <a class="dropdown-item d-none d-md-block" href="{{route('prfl.show')}}">Perfil</a>
                     <a class="dropdown-item" href="{{route('settings.index')}}">Ajustes</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">{{ __('Cerrar Sesión') }}</a>

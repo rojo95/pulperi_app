@@ -127,8 +127,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
         <!-- Library for adding dinamically elements -->
         <script src="{{asset('js/plugins/arrive.min.js')}}"></script>
-        <!-- Chartist JS -->
-        <script src="{{asset('js/plugins/chartist.min.js')}}"></script>
+        <!-- Chart JS -->
+        <script src="{{asset('js/chart.min.js')}}"></script>
         <!--  Notifications Plugin    -->
         <script src="{{asset('js/plugins/bootstrap-notify.js')}}"></script>
         <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->

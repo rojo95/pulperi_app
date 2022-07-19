@@ -24,10 +24,16 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $res)
     {
-        $roles = Role::paginate(3);
-        return view('roles.index',compact('roles'));
+        $info = $res->search;
+        $roles = Role::
+            whereRaw("unaccent(name) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(to_char(created_at, 'dd/mm/yy HH12:MI AM')) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(CASE WHEN status = true THEN 'activo' ELSE 'inactivo' END) ILIKE unaccent('%".$info."%')")
+            ->orderBy('name','asc')
+            ->paginate(3);
+        return view('roles.index',compact('roles','info'));
     }
 
     /**

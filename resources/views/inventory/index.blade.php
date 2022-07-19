@@ -6,18 +6,33 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary d-flex">
-                        <div class="col-sm-10">
-                            <h4 class="card-title">Inventario</h4>
-                            <p class="card-category">Información básica de los productos registrados</p>
+                    <div class="card-header card-header-primary header-search">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <h4 class="card-title">Inventario</h4>
+                                <p class="card-category">Información básica de los productos registrados</p>
+                            </div>
+                            <div class="col-md-5 align-right">
+                                <form action="{{route('invntry.index')}}">
+                                    <div class="group-txt">
+                                        <input type="text" name="search" id="search" class="input-group-left" autocomplete="off" placeholder="Producto" value="{{$info}}">
+                                        @can('inventory_create')
+                                            <button class="btn btn-secondary btn-group-center" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <a class="btn btn-secondary btn-group-right" href="{{ route('invntry.create') }}" title="Registrar Nuevo Producto">
+                                                <i class="fas fa-cart-plus fa-lg"></i>
+                                            </a>
+                                        @endcan
+                                        @cannot('inventory_create')
+                                            <a class="btn btn-secondary btn-group-right" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        @endcannot
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        @can('inventory_create')
-                        <div class="col-sm-2">
-                            <a class="nav-link" href="{{ route('invntry.create') }}" title="Registrar Nuevo Producto">
-                                <button class="btn btn-secondary"><i class="fas fa-cart-plus fa-lg"></i></button>
-                            </a>
-                        </div>
-                        @endcan
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

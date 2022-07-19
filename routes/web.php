@@ -11,6 +11,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ToDiscountController;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +87,9 @@ Route::middleware(['valAuth'])->group(function(){
         Route::get('/prodLot/{id}', [ToDiscountController::class, 'productByIdLot'])->name('tdscnt.productByIdLot');
 
         // rutas para las ventas
+        Route::post('/sales/week',[SaleController::class,'salesWeek']);
+        Route::post('/sale/last',[SaleController::class,'lastTransaction']);
+        Route::post('/sale/week/client',[SaleController::class,'clientSalesWeek']);
         Route::resource('/sales', SaleController::class)->names('sls');
 
         // rutas para los clientes
@@ -95,12 +100,17 @@ Route::middleware(['valAuth'])->group(function(){
         Route::post('/debt/detail', [DebtController::class,'debt_detail'])->name('dbts.detail');
         Route::resource('/debts', DebtController::class)->names('dbts');
 
+        // rutas para las notificaciones
+        Route::get('/notifications', [NotificationController::class,'index'])->name('ntfctns');
+        Route::post('/notifications', [NotificationController::class,'show'])->name('ntfctns.show');
+
+        // rutas para graficos
+        Route::get('/reports', [ReportController::class,'index'])->name('rprts');
+
 
         Route::get('/settings', [SettingsController::class,'index'])->name('settings.index');
         Route::get('/config', [SettingsController::class,'edit'])->name('settings.config');
         Route::put('/config', [SettingsController::class,'update'])->name('settings.config');
-
-
 
     });
 });

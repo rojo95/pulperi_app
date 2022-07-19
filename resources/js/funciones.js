@@ -1,5 +1,5 @@
-import { ajax, each } from 'jquery';
-import { functionsIn } from 'lodash';
+import { ajax, each, map } from 'jquery';
+import { find, functionsIn } from 'lodash';
 import Swal from 'sweetalert2';
 
 $(document).ready(function() {
@@ -100,9 +100,9 @@ $(document).ready(function() {
                         $('p.notif').before('<span class="notification notif">'+data.length+'</span>');
                         $('i.notif').after('<span class="badge badge-danger sidebar-custom notif">'+data.length+'</span>');
                         data.forEach(element => {
-                            $('div.notif').append('<a class="dropdown-item" href="#">El lote "'+element.cod_lot+'" del producto "'+element.products[0].name+'" posee "'+(element.quantity-element.sold)+'" unidades proximas a vencerse.</a>')
+                            $('div.notif').append('<a class="dropdown-item" href="#">El lote "'+element.cod_lot+'" del producto "'+element.products.name+'" posee "'+(element.quantity-element.sold)+'" unidades vencidas o proximas a vencerse.</a>')
                         });
-                        $('div.notif').after('<a class="btn btn-sm btn-info col-md-12" href="notifications">VER TODAS LAS NOTIFICACIONES</a>');
+                        $('div.notif').after('<a class="btn btn-sm btn-info col-md-12" href="../notifications">VER TODAS LAS NOTIFICACIONES</a>');
                     } else {
                         $("div.notif").html("<div class='col-sm-12'>No posee notificaciones...</div>");
                     }
@@ -389,9 +389,9 @@ $(document).ready(function() {
                                                 (ds == 1 ? (d.quantity*d.price).toFixed(2)+' Bs = '+ ((d.quantity*d.price)/dolar).toFixed(2) : (d.quantity*d.price).toFixed(2)+' USD = '+((d.quantity*d.price)*dolar).toFixed(2))
                                             +'</td>'+
                                             '<td class=" col-sm-2 td-actions text-right">'+
-                                                '<button type="button" class="btn btn-primary mod-prod" title="Modificar cantidades">'+
-                                                    '<i class="material-icons">edit</i>'+
-                                                '</button>'+
+                                                // '<button type="button" class="btn btn-primary mod-prod" title="Modificar cantidades">'+
+                                                //     '<i class="material-icons">edit</i>'+
+                                                // '</button>'+
                                                 '<button type="button" class="btn btn-danger del-prod" title="Eliminar producto asociado">'+
                                                     '<i class="material-icons">delete</i>'+
                                                 '</button>'+
@@ -456,44 +456,45 @@ $(document).ready(function() {
                 cache: true,
                 async : false,
                 success: function (r) {
-                    if(r==null||r==undefined||r.length==0) {
-                        $('#searchProdButton').removeAttr('data-toggle');
-                        $('#searchProdButton').removeAttr('data-target');
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'El producto que desea consultar no existe o fue deshailitado.'
-                        });
-                    } else if(r[0].quantity-r[0].sold<=0) {
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Ya no quedan existencias del producto.'
-                        });
-                    } else {
+                    console.log(r)
+                    // if(r==null||r==undefined||r.length==0) {
+                    //     $('#searchProdButton').removeAttr('data-toggle');
+                    //     $('#searchProdButton').removeAttr('data-target');
+                    //     Toast.fire({
+                    //         icon: 'error',
+                    //         title: 'El producto que desea consultar no existe o fue deshailitado.'
+                    //     });
+                    // } else if(r[0].quantity-r[0].sold<=0) {
+                    //     Toast.fire({
+                    //         icon: 'error',
+                    //         title: 'Ya no quedan existencias del producto.'
+                    //     });
+                    // } else {
                         $('#searchProdButton').attr('data-toggle','modal');
                         $('#searchProdButton').attr('data-target','#searchProd');
-                        var expiration = formatDate(r[0].expiration);
+                        let expiration = formatDate(r.expiration);
                         producto = {
-                            id: r[0].products[0].id,
-                            name: r[0].products[0].name,
+                            id: r.products.id,
+                            name: r.products.name,
                             lots: [{
-                                id: r[0].id,
-                                cod: r[0].cod_lot,
-                                price: r[0].sell_price,
-                                divisa: r[0].divisa_id,
-                                existencia: r[0].quantity-r[0].sold,
+                                id: r.id,
+                                cod: r.cod_lot,
+                                price: r.sell_price,
+                                divisa: r.divisa_id,
+                                existencia: r.quantity-r.sold,
                                 expiration: expiration,
                                 quantity: 0
                             }]
                         }
-                        $('div.prod-modal').html(r[0].products[0].name);
-                        $('p.lot-modal').html(r[0].cod_lot);
+                        $('div.prod-modal').html(r.products.name);
+                        $('p.lot-modal').html(r.cod_lot);
                         $('p.price-modal').html(
-                            r[0].divisa_id == 1 ? r[0].sell_price+' Bs => '+(r[0].sell_price/dolar).toFixed(2)+' USD' : r[0].sell_price+' USD => '+(r[0].sell_price*dolar).toFixed(2)+' Bs'
+                            r.divisa_id == 1 ? r.sell_price+' Bs => '+(r.sell_price/dolar).toFixed(2)+' USD' : r.sell_price+' USD => '+(r.sell_price*dolar).toFixed(2)+' Bs'
                         );
-                        $('p.total-modal').html(r[0].quantity-r[0].sold);
+                        $('p.total-modal').html(r.quantity-r.sold);
                         $('p.fecha-modal').html(expiration);
-                        $('input#quantity').attr('max',r[0].quantity-r[0].sold);
-                    }
+                        $('input#quantity').attr('max',r.quantity-r.sold);
+                    // }
                 }, error : function(xhr, status) {
                     alert('Disculpe: '+status+'.');
                     console.log(xhr);
@@ -699,8 +700,9 @@ $(document).ready(function() {
             success: function (res) {
                 if(res.length>0){
                     divModal.html('');
+                    console.log(res);
                     $.each(res,function (i,r) {
-                        divModal.append('<button type="button" value="'+r.id+'" class="list-group-item list-group-item-action btn-prod" data-dismiss="modal" '+ (r.quantity==0 ? "disabled" : "") +' ><strong class="text-primary">'+r.prod+'</strong> - '+(r.quantity==0 ? '<strong class="text-danger">AGOTADO</strong>' : '')+ '</button>')
+                        divModal.append('<button type="button" value="'+r.id+'" class="list-group-item list-group-item-action btn-prod" data-dismiss="modal" '+ (r.quantity==0 ? "disabled" : "") +' ><strong class="text-primary">'+r.prod+'</strong>'+(r.quantity==0 ? '- <strong class="text-danger">AGOTADO</strong>' : '')+ '</button>')
                         // divModal.append('<button type="button" value="'+r.id+'" class="list-group-item list-group-item-action btn-prod" data-dismiss="modal" '+ (r.quantity==0 ? "disabled" : "") +' ><strong class="text-primary">'+r.prod+'</strong> - '+(r.quantity==0 ? '<strong class="text-danger">AGOTADO</strong>' : 'Existencia: '+r.quantity)+'</button>')
                     });
                 } else {
@@ -1264,7 +1266,8 @@ $(document).ready(function() {
                             title: r.info,
                             showCancelButton: false,
                         }).then(()=> {
-                            window.location.href="/clients/"+$('input[name="id"]').val();
+                            window.location.href="/clients/";
+                            // window.location.href="/clients/"+$('input[name="id"]').val();
                         }) : Toast.fire({icon: 'error',title: r});
                     }, error : function(xhr, status) {
                         var e = 'error', m = 'Error al actualizar los datos del cliente.';
@@ -1411,5 +1414,355 @@ $(document).ready(function() {
         $('input#limit_amount').val('');
     }
 
+    // EJEMPLO DE BOOTSTRAP NOTIFY
+    // $.notify({
+    //     title: '<strong>Info...</strong>',
+    //     icon: 'info',
+    //     message: "Mensaje!"
+    //   },{
+    //     type: 'info',
+    //     animate: {
+    //           enter: 'animated fadeInUp',
+    //       exit: 'animated fadeOutRight'
+    //     },
+    //     placement: {
+    //       from: "bottom",
+    //       align: "left"
+    //     },
+    //     offset: 20,
+    //     spacing: 10,
+    //     z_index: 1031,
+    //     timer: 1000,
+    //     animate: {
+    //         enter: 'animated fadeInDown',
+    //         exit: 'animated fadeOutUp'
+    //     },
+    //   });
+
+
+    if ($('#weekSales').length>0) {
+        const dias = [
+            'Dom',
+            'Lun',
+            'Mar',
+            'Mié',
+            'Jue',
+            'Vie',
+            'Sáb',
+        ];
+        let _token = $("input[name='_token']").val();
+        $.ajax({
+            type: "post",
+            url: "../sales/week",
+            data: { _token:_token },
+            dataType: "json",
+            success: function (response) {
+                let dates = new Date().getDay(), b = 0, labels = [], sales = [0,0,0,0,0,0,0], debts=[0,0,0,0,0,0,0], first=dates;
+                for (let i = 0; i < 7; i++) {
+                    var x=dates-b;
+                    labels.push(dias[x]);
+                    if (x==0) {
+                        if(first==0) {
+                            b=-7
+                        } else if (first==1) {
+                            b=-6
+                        } else if (first==2) {
+                            b=-5
+                        } else if (first==3) {
+                            b=-4
+                        } else if (first==4) {
+                            b=-3
+                        } else if (first==5) {
+                            b=-2
+                        } else if (first==6) {
+                            b=-1
+                        }
+                    }
+                    b=b+1;
+                }
+                labels = labels.reverse();
+                $.each(response,function(i,r){
+                    if(r.type==1){
+                        sales[labels.indexOf(r.dia)] = r.count;
+                    } else {
+                        debts[labels.indexOf(r.dia)] = r.count;
+                    }
+                });
+                const reducer = (accumulator, curr) => accumulator + curr;
+                let promSales = sales.reduce(reducer) / 7;
+                let promDebts = debts.reduce(reducer) / 7;
+                let roundPromSales = Math.round((promSales+Number.EPSILON)*100)/100;
+                let roundPromDebts = Math.round((promDebts+Number.EPSILON)*100)/100;
+                $('span#promedio').html(roundPromSales);
+                $('span#promedioDebts').html(roundPromDebts);
+                let info = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ventas de Contado',
+                        data: sales,
+                        fill: false,
+                        borderColor: 'green',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Ventas a Crédito',
+                        data: debts,
+                        fill: false,
+                        borderColor: 'red',
+                        tension: 0.1
+                    }]
+                };
+                let config = {
+                    type: 'line',
+                    data: info,
+                };
+                const weekSales = document.getElementById('weekSales').getContext('2d');
+                const weekSalesChart = new Chart(weekSales, config);
+
+                $.ajax({
+                    type: "post",
+                    url:  "../sale/last",
+                    data: {_token:_token},
+                    dataType: "json",
+                    success: function (data) {
+                        var fechaInicio = new Date(data.date);
+                        var fechaFin    = new Date().getTime();
+                        var diff = fechaFin - fechaInicio;
+                        let dias = Math.trunc(diff/(1000*60*60*24));
+                        let horas = Math.trunc(diff/(1000*60*60));
+                        let min = Math.trunc(diff/(1000*60));
+                        let seg = Math.trunc(diff/(1000));
+                        let lastSale = (dias > 0) ? dias+' día/s' : (horas > 0) ? horas+' hora/s' : (min > 0) ? min+' minuto/s' : seg+' segundo/s';
+                        $('#lastSale').html(lastSale);
+                    }
+                });
+            }
+        });
+    }
+
+    if ($('#userWeekSales').length>0) {
+        const dias = [
+            'Dom',
+            'Lun',
+            'Mar',
+            'Mié',
+            'Jue',
+            'Vie',
+            'Sáb',
+        ];
+        let id = $("input[name='id']").val();
+        let _token = $("input[name='_token']").val();
+
+        $.ajax({
+            type: "post",
+            url: "../sales/week",
+            data: {
+                id:id,
+                _token:_token
+            },
+            dataType: "json",
+            success: function (response) {
+                let dates = new Date().getDay(), b = 0, labels = [], sales = [0,0,0,0,0,0,0], debts=[0,0,0,0,0,0,0], first=dates;
+                for (let i = 0; i < 7; i++) {
+                    var x=dates-b;
+                    labels.push(dias[x]);
+                    if (x==0) {
+                        if(first==0) {
+                            b=-7
+                        } else if (first==1) {
+                            b=-6
+                        } else if (first==2) {
+                            b=-5
+                        } else if (first==3) {
+                            b=-4
+                        } else if (first==4) {
+                            b=-3
+                        } else if (first==5) {
+                            b=-2
+                        } else if (first==6) {
+                            b=-1
+                        }
+                    }
+                    b=b+1;
+                }
+                labels = labels.reverse();
+                $.each(response,function(i,r){
+                    if(r.type==1){
+                        sales[labels.indexOf(r.dia)] = r.count;
+                    } else {
+                        debts[labels.indexOf(r.dia)] = r.count;
+                    }
+                });
+                const reducer = (accumulator, curr) => accumulator + curr;
+                let promSales = sales.reduce(reducer) / 7;
+                let promDebts = debts.reduce(reducer) / 7;
+                let roundPromSales = Math.round((promSales+Number.EPSILON)*100)/100;
+                let roundPromDebts = Math.round((promDebts+Number.EPSILON)*100)/100;
+                $('span#promedio').html(roundPromSales);
+                $('span#promedioDebts').html(roundPromDebts);
+                let info = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ventas de Contado',
+                        data: sales,
+                        fill: false,
+                        borderColor: 'green',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Ventas a Crédito',
+                        data: debts,
+                        fill: false,
+                        borderColor: 'red',
+                        tension: 0.1
+                    }]
+                };
+                let config = {
+                    type: 'line',
+                    data: info,
+                };
+                const weekSales = document.getElementById('userWeekSales').getContext('2d');
+                const weekSalesChart = new Chart(weekSales, config);
+
+                $.ajax({
+                    type: "post",
+                    url: "../sale/last",
+                    data: {
+                        id:id,
+                        _token:_token,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        var fechaInicio = new Date(data.date);
+                        var fechaFin    = new Date().getTime();
+                        var diff = fechaFin - fechaInicio;
+                        let dias = Math.trunc(diff/(1000*60*60*24));
+                        let horas = Math.trunc(diff/(1000*60*60));
+                        let min = Math.trunc(diff/(1000*60));
+                        let seg = Math.trunc(diff/(1000));
+                        let lastSale = (dias > 0) ? dias+' día/s' : (horas > 0) ? horas+' hora/s' : (min > 0) ? min+' minuto/s' : seg+' segundo/s';
+                        if (isNaN(diff)) {
+                            $('#lastSale').closest('.card-footer').remove();
+                        } else {
+                            $('#lastSale').html(lastSale);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    if ($('#transactionsClient').length>0) {
+        console.log('ACTIVO')
+        const dias = [
+            'Dom',
+            'Lun',
+            'Mar',
+            'Mié',
+            'Jue',
+            'Vie',
+            'Sáb',
+        ];
+        let id = $("input[name='id']").val();
+        let _token = $("input[name='_token']").val();
+
+        $.ajax({
+            type: "post",
+            url: "../sale/week/client",
+            data: {
+                id:id,
+                _token:_token
+            },
+            dataType: "json",
+            success: function (response) {
+                let dates = new Date().getDay(), b = 0, labels = [], sales = [0,0,0,0,0,0,0], debts=[0,0,0,0,0,0,0], first=dates;
+                for (let i = 0; i < 7; i++) {
+                    var x=dates-b;
+                    labels.push(dias[x]);
+                    if (x==0) {
+                        if(first==0) {
+                            b=-7
+                        } else if (first==1) {
+                            b=-6
+                        } else if (first==2) {
+                            b=-5
+                        } else if (first==3) {
+                            b=-4
+                        } else if (first==4) {
+                            b=-3
+                        } else if (first==5) {
+                            b=-2
+                        } else if (first==6) {
+                            b=-1
+                        }
+                    }
+                    b=b+1;
+                }
+                labels = labels.reverse();
+                $.each(response,function(i,r){
+                    if(r.type==1){
+                        sales[labels.indexOf(r.dia)] = r.count;
+                    } else {
+                        debts[labels.indexOf(r.dia)] = r.count;
+                    }
+                });
+                const reducer = (accumulator, curr) => accumulator + curr;
+                let promSales = sales.reduce(reducer) / 7;
+                let promDebts = debts.reduce(reducer) / 7;
+                let roundPromSales = Math.round((promSales+Number.EPSILON)*100)/100;
+                let roundPromDebts = Math.round((promDebts+Number.EPSILON)*100)/100;
+                $('span#promedio').html(roundPromSales);
+                $('span#promedioDebts').html(roundPromDebts);
+                let info = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ventas de Contado',
+                        data: sales,
+                        fill: false,
+                        borderColor: 'green',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Ventas a Crédito',
+                        data: debts,
+                        fill: false,
+                        borderColor: 'red',
+                        tension: 0.1
+                    }]
+                };
+                let config = {
+                    type: 'line',
+                    data: info,
+                };
+                const weekSales = document.getElementById('transactionsClient').getContext('2d');
+                const weekSalesChart = new Chart(weekSales, config);
+
+                $.ajax({
+                    type: "post",
+                    url: "../sale/last",
+                    data: {
+                        id:id,
+                        _token:_token,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        var fechaInicio = new Date(data.date);
+                        var fechaFin    = new Date().getTime();
+                        var diff = fechaFin - fechaInicio;
+                        let dias = Math.trunc(diff/(1000*60*60*24));
+                        let horas = Math.trunc(diff/(1000*60*60));
+                        let min = Math.trunc(diff/(1000*60));
+                        let seg = Math.trunc(diff/(1000));
+                        let lastSale = (dias > 0) ? dias+' día/s' : (horas > 0) ? horas+' hora/s' : (min > 0) ? min+' minuto/s' : seg+' segundo/s';
+                        if (isNaN(diff)) {
+                            $('#lastSale').closest('.card-footer').remove();
+                        } else {
+                            $('#lastSale').html(lastSale);
+                        }
+                    }
+                });
+            }
+        });
+    }
 
 });

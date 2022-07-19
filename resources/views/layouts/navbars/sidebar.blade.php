@@ -161,14 +161,14 @@
             </li>
             @endcan
             <li class="nav-item{{ $activePage == 'notifications' ? ' active' : '' }}">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{route('ntfctns')}}">
                     <i class="material-icons notif">notifications</i>
                     <p class="">Notificaciones</p>
                 </a>
             </li>
             @can('report_index')
             <li class="nav-item{{ $activePage == 'charts' ? ' active' : '' }}">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{route('rprts')}}">
                     <i class="material-icons">bar_chart</i>
                     <p>Reportes</p>
                 </a>

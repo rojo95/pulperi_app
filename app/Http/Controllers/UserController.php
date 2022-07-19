@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -29,13 +30,24 @@ class UserController extends Controller
         $this->middleware('userUpdAdmin')->only('showUser','editUser','updateUser','statusUser');
 
     }
-    public function indexUsers(){
+    public function indexUsers(Request $res){
+        $info = $res->search;
         $own_roles = [];
         foreach (Auth::user()->roles as $v) {
             array_push($own_roles,$v->id);
         }
-        $users = User::join('profiles', 'profiles.user_id', 'users.id')->orderBy('profiles.name')->paginate(5);
-        return view('users.index',compact('users','own_roles'));
+        $users = User::
+            join('profiles', 'profiles.user_id', 'users.id')
+            ->whereRaw("unaccent(name) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(lastname) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(username) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(email) ILIKE unaccent('%".$info."%')")
+            ->orWhere("identification","ILIKE", '%'.$info.'%')
+            ->orWhereRaw("unaccent(to_char(users.created_at, 'dd/mm/yy HH12:MI AM')) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(CASE WHEN status=1 THEN 'activo' ELSE 'inactivo' END) ILIKE unaccent('%".$info."%')")
+            ->orderBy('profiles.name')
+            ->paginate(5);
+        return view('users.index',compact('users','own_roles','info'));
     }
 
     public function createUser(){
@@ -194,4 +206,40 @@ class UserController extends Controller
         $user->update($data);
         return redirect()->route('prfl.show')->with('success','Perfil actualizado correctamente.');
     }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        $user = User::
+            where('status',true)
+            ->where('username', $request->email)
+            ->orWhere('email',$request->email)
+            ->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+
+            //Crear Token Santum
+            $token = $user->createToken("auth_token")->plainTextToken;
+
+            return response()->json([
+                'code'  => 200,
+                'status' => 1,
+                'msg'   => 'Usuario Logueado.',
+                'access_token'  => $token,
+                'user_name' => $user->profile->name.' '.$user->profile->lastname
+            ],200);
+        }
+
+        return response()->json([
+            'code' => 202,
+            'status' => 1,
+            'access_token' => '',
+            'msg' => 'Credenciales de acceso erróneas.'
+        ],202);
+    }
+
 }

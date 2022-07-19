@@ -6,19 +6,32 @@
         <div class="row">
             <div class="col col-sm-12">
                 <div class="card">
-                    <div class="card-header card-header-primary">
+                    <div class="card-header card-header-primary header-search-sm">
                         <div class="row">
-                            <div class="col col-sm-10">
+                            <div class="col col-sm-7">
                                 <h4 class="card-title">Descuentos Realizados</h4>
                                 <p class="card-category d-none d-md-flex">Información básica de los descuentos de inventario realizados.</p>
                             </div>
-                            @can('to_discount_create')
-                            <div class="col col-sm-2 vertical-m">
-                                <a class="nav-link" href="{{ route('tdscnt.create') }}" title="Registrar Nuevo Producto">
-                                    <button class="btn btn-secondary"><span class="material-icons">money_off</span></button>
-                                </a>
+                            <div class="col-md-5 align-right">
+                                <form action="{{route('tdscnt.index')}}">
+                                    <div class="group-txt">
+                                        <input type="text" name="search" id="search" class="input-group-left" autocomplete="off" placeholder="Descuento" value="{{$info}}">
+                                        @can('to_discount_create')
+                                            <button class="btn btn-secondary btn-group-center" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <a class="btn btn-secondary btn-group-right" href="{{ route('tdscnt.create') }}" title="Retirar Producto del Inventario">
+                                                <span class="material-icons">money_off</span>
+                                            </a>
+                                        @endcan
+                                        @cannot('to_discount_create')
+                                            <a class="btn btn-secondary btn-group-right" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        @endcannot
+                                    </div>
+                                </form>
                             </div>
-                            @endcan
                         </div>
                     </div>
                     <div class="card-body">

@@ -29,10 +29,23 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $res)
     {
-        $products = Product::paginate(5);
-        return view('inventory.index',compact('products'));
+        $info = $res->search;
+        $products = Product::
+        select('products.*')
+        ->join('products_types AS a','products.products_type_id','a.id')
+        ->join('lot_product AS b','products.id','b.product_id')
+        ->join('lots AS c','b.lot_id','c.id')
+        ->whereRaw("unaccent(products.name) ILIKE unaccent('%".$info."%')")
+        ->orWhereRaw("unaccent(products.description) ILIKE unaccent('%".$info."%')")
+        ->orWhereRaw("unaccent(a.name) ILIKE unaccent('%".$info."%')")
+        ->orWhereRaw("unaccent(c.cod_lot) ILIKE unaccent('%".$info."%')")
+        ->paginate(5);
+        // ->toSql();
+
+        // dd($products);
+        return view('inventory.index',compact('products','info'));
     }
 
     /**

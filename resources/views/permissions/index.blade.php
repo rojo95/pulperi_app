@@ -6,17 +6,32 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary d-flex">
-                        <div class="col-sm-10">
-                            <h4 class="card-title">Permisos</h4>
-                            <p class="card-category">Permisos registrados.</p>
-                        </div>
-                        <div class="col-sm-2">
-                            @can('permission_create')
-                            <a class="nav-link" href="{{ route('prmssns.create') }}" title="Crear nuevo permiso">
-                                <button class="btn btn-secondary"><i class="material-icons">add_moderator</i></button>
-                            </a>
-                            @endcan
+                    <div class="card-header header-search card-header-primary">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-7">
+                                <h4 class="card-title">Permisos</h4>
+                                <p class="card-category">Permisos registrados.</p>
+                            </div>
+                            <div class="col-md-5">
+                                <form action="{{route('prmssns.index')}}">
+                                    <div class="group-txt">
+                                        <input type="text" name="search" id="search" class="input-group-left" autocomplete="off" placeholder="Permiso" value="{{$info}}">
+                                        @can('permission_create')
+                                            <button class="btn btn-secondary btn-group-center" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <a class="btn btn-secondary btn-group-right" href="{{ route('prmssns.create') }}" title="Crear nuevo permiso">
+                                                <i class="material-icons">add_moderator</i>
+                                            </a>
+                                        @endcan
+                                        @cannot('permission_create')
+                                            <button class="btn btn-secondary btn-group-right" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        @endcannot
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -65,7 +80,11 @@
                                         </td>
                                     </tr>
                                     @empty
-                                    No hay permisos registrados aún...
+                                    <tr>
+                                        <td colspan="4">
+                                            No hay permisos registrados aún...
+                                        </td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                             </table>

@@ -69,47 +69,32 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="card card-chart">
-                                                <div class="card-header card-header-success">
-                                                    <div class="ct-chart" id="dailySalesChart"></div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h4 class="card-title">Ventas del Día</h4>
-                                                    <p class="card-category">
-                                                        <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> Aumento en las ventas diarias.
-                                                    </p>
-                                                </div>
-                                                <div class="card-footer">
-                                                    <div class="stats">
-                                                        <i class="material-icons">access_time</i> Ultima venta hace 4 minutos.
-                                                    </div>
-                                                </div>
+                                    <div class="card card-chart">
+                                        <div class="card-header ">
+                                            <canvas id="userWeekSales" height="200"></canvas>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title strong">Transacciones de los últimos 7 días</h4>
+                                            <h4 class="card-category text-secondary">
+                                                Promedio de <span class="text-success"><i class="fas fa-shopping-cart"></i> <span id="promedio"></span> </span> ventas diarias.
+                                                <br>
+                                                Promedio de <span class="text-danger"><i class="fas fa-money-bill-wave"></i> <span id="promedioDebts"></span> </span> ventas a credito diarias.
+                                            </h4>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="stats">
+                                                <h4 class="text-secondary">
+                                                    <i class="material-icons">access_time</i> Ultima transacción hace <span id="lastSale"></span>.
+                                                </h4>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="card card-chart">
-                                                <div class="card-header card-header-danger">
-                                                    <div class="ct-chart" id="completedTasksChart"></div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h4 class="card-title">Ventas a crédito.</h4>
-                                                    <p class="card-category">Last Campaign Performance</p>
-                                                </div>
-                                                <div class="card-footer">
-                                                    <div class="stats">
-                                                        <i class="material-icons">access_time</i> Se fió hace 2 días.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {!! Form::hidden('id', Crypt::encrypt($user->id)) !!}
+                                        @csrf
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {{-- <x-users.ficha-usuario type="2" roles="{{$user->roles}}" id="{{$user->id}}" name="{{$user->name.' '.$user->lastname}}" username="{{$user->username}}" created_at="{{$user->created_at->toFormattedDateString()}}" email="{{$user->email}}"/> --}}
                 </div>
             </div>
         </div>

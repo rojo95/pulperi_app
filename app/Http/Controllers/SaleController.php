@@ -13,6 +13,7 @@ use App\Models\ProductTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -31,10 +32,26 @@ class SaleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $res)
     {
-        $sales = Transaction::paginate(5);
-        return view('sales.index',compact('sales'));
+        $info = $res->search;
+        $sales = Transaction::
+            select('transactions.*')
+            ->selectRaw("CASE WHEN transaction_type = '1' THEN 'Venta de Contado' ELSE 'Venta a Crédito' END AS type")
+            ->join('clients AS a','transactions.client_id','a.id')
+            ->join('profiles AS b','transactions.user_id','b.id')
+            ->whereRaw("unaccent(a.name) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(a.lastname) ILIKE unaccent('%".$info."%')")
+            ->orWhere("a.ced",'ILIKE',$info)
+            ->orWhere("b.identification",'ILIKE',$info)
+            ->orWhereRaw("unaccent(b.name) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(b.lastname) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(CASE WHEN transaction_type = '1' THEN 'Venta de Contado' ELSE 'Venta a Crédito' END) ILIKE unaccent('%".$info."%')")
+            ->orWhereRaw("unaccent(to_char(transactions.created_at, 'dd/mm/yy HH12:MI AM')) ILIKE unaccent('%".$info."%')")
+            ->orderBy('id','desc')
+            ->paginate(5);
+        // dd($sales);
+        return view('sales.index',compact('sales','info'));
     }
 
     /**
@@ -198,4 +215,43 @@ class SaleController extends Controller
             return redirect()->route('sls.show',Crypt::encrypt($id))->with('success',$e->getMessage())->with('type','danger');
         }
     }
+
+    public function salesWeek(Request $res)
+    {
+        $id = empty($res->id) ? auth()->user()->id : Crypt::decrypt($res->id);
+
+        $transactions = Transaction::
+            selectRaw("count(id), CASE WHEN to_char(created_at,'dy')='mon' THEN 'Lun' WHEN to_char(created_at,'dy')='tue' THEN 'Mar' WHEN to_char(created_at,'dy')='wed' THEN 'Mié' WHEN to_char(created_at,'dy')='Thu' THEN 'Jue' WHEN to_char(created_at,'dy')='fri' THEN 'Vie' WHEN to_char(created_at,'dy')='sat' THEN 'Sáb' WHEN to_char(created_at,'dy')='sun' THEN 'Dom' END AS dia, transaction_type AS type")
+            ->where('user_id',$id)
+            ->whereBetween('created_at',[Carbon::now()->subDays(7),now()])
+            ->groupByRaw("to_char(created_at,'dy'),transaction_type")
+            ->get();
+        return response()->json($transactions);
+    }
+
+    public function lastTransaction(Request $res)
+    {
+        $id = empty($res->id) ? auth()->user()->id : Crypt::decrypt($res->id);
+        $transaction = Transaction::
+            selectRaw("created_at as date")
+            ->where('user_id',$id)
+            ->orderBy('id','desc')
+            ->first();
+        return response()->json($transaction);
+    }
+
+    public function clientSalesWeek(Request $res)
+    {
+        $id = empty($res->id) ? auth()->user()->id : Crypt::decrypt($res->id);
+
+        $transactions = Transaction::
+            selectRaw("count(id), CASE WHEN to_char(created_at,'dy')='mon' THEN 'Lun' WHEN to_char(created_at,'dy')='tue' THEN 'Mar' WHEN to_char(created_at,'dy')='wed' THEN 'Mié' WHEN to_char(created_at,'dy')='Thu' THEN 'Jue' WHEN to_char(created_at,'dy')='fri' THEN 'Vie' WHEN to_char(created_at,'dy')='sat' THEN 'Sáb' WHEN to_char(created_at,'dy')='sun' THEN 'Dom' END AS dia, transaction_type AS type")
+            ->where('client_id',$id)
+            ->whereBetween('created_at',[Carbon::now()->subDays(7),now()])
+            ->groupByRaw("to_char(created_at,'dy'),transaction_type")
+            ->get();
+
+        return response()->json($transactions);
+    }
+
 }
