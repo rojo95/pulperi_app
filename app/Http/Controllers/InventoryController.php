@@ -209,4 +209,40 @@ class InventoryController extends Controller
         array_push($arr,['id'=>$prod->id,'img'=>$prod->img,'prod'=>$prod->name,'desc'=>$prod->desc,'existence'=>$existence,'price'=>$price_arr,'sale_measure'=>$prod->sales_measure_id]);
         return response()->json($arr);
     }
+
+    // Consultar producto por lote
+    public function productByLote(Request $request)
+    {
+        $cod = $request->lote;
+
+        $lot = Lot::
+            select(
+                'lots.id AS lot_id','lots.cod_lot','lots.price_bs','lots.price_dollar',
+                'b.id','b.description AS desc','b.name AS prod', 'sales_measure_id',
+                'divisa_id','b.img','lots.sell_price','quantity','sold')
+                ->join('lot_product AS a','a.lot_id','lots.id')
+                ->join('products AS b','a.product_id','b.id')
+                ->where('cod_lot',$cod)
+                ->where('lots.status',true)
+                ->first();
+
+  
+        // $arr = array();
+
+        // foreach ($product as $k => $v) {
+        //     $prod = $v->name;
+        //     $existence = 0;
+        //     $desc = $v->description;
+        //     foreach ($v->lots as $i => $d) {
+        //         if($d->status==true){
+        //             $existence = $existence + ($d->quantity-$d->sold);
+        //         }
+        //         // $existence = 0;
+        //     }
+        //     array_push($arr,['id'=>$v->id,'prod'=>$prod,'quantity'=>$existence,'desc'=>$desc]);
+        // }
+        return response()->json($lot);
+    }
+
+
 }

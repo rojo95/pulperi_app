@@ -20,7 +20,13 @@
                                             <p class="card-text">
                                                 <div class="author">
                                                     <a href="#" class="d-flex">
-                                                        <img src="{{asset('/img/faces/card-profile1-square.jpg')}}" alt="image" class="avatar">
+                                                        @if(auth()->user()->img)
+                                                            <img src="{{asset('/img/faces/'.
+                                                            (auth()->user()->img ? auth()->user()->img : (auth()->user()->profile->genere_id == 1 ? 'card-profile1-square' : 'avatar'))
+                                                            .'.jpg')}}" alt="image" class="avatar">
+                                                        @else
+                                                            <i class="material-icons" style="font-size: 35px">account_circle</i>
+                                                        @endif
                                                         <h3 class="title mx-3 my-0">{{$user->username!='admin' ? $user->profile->name.' '.$user->profile->lastname : $user->profile->name}}</h3>
                                                     </a>
                                                     <h4 class="description text-secondary">

@@ -28,7 +28,7 @@ class ProductRegisterRequest extends FormRequest
             'description'      => 'string|sometimes|nullable',
             'unit_box'         => 'required_if:conteo,2|sometimes|nullable|numeric|min:1',
             'tipo'             => 'required',
-            'cod_lot'          => 'required|alpha_num|min:1|unique:lots',
+            'cod_lot'          => 'required|min:1|unique:lots',
             'quantity'         => 'required|numeric|min:1',
             'price_dollar'     => 'required|min:1|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/',
             'sell_price'       => 'required|min:1|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/',

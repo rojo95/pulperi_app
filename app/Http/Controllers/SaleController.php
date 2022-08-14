@@ -9,6 +9,7 @@ use App\Models\DebtorMovementTransaction;
 use App\Models\PaymentMethod;
 use App\Models\PaymentMethodTransaction;
 use App\Models\Product;
+use App\Models\Lot;
 use App\Models\ProductTransaction;
 use App\Models\Transaction;
 use App\Models\User;
@@ -78,6 +79,8 @@ class SaleController extends Controller
      */
     public function store(SaleStoreRequest $request)
     {
+        return response()->json($request->all());
+        die();
         $own_roles = [];
         foreach (Auth::user()->roles as $v) {
             array_push($own_roles,$v->id);
@@ -122,6 +125,41 @@ class SaleController extends Controller
                 } elseif($divisa==2){
                     $usd = $price;
                     $bs = $price*$request->usd;
+                }
+
+                if($v['lot_id']){
+                    $lot = Lot::find($v['lot_id']);
+                    
+
+                    $toDiscount = toDiscount::create($request->only('type_to_discount_id')+['user_id'=>$user]);
+
+                    UserToDiscount::create(['user_id'=>auth()->user()->id,'to_discount_id'=>$toDiscount->id]);
+
+                    if ($v['sale'] > ($lot->quantity)-($lot->sold)) {
+                        return response()->json(['res'=>2,'info'=>'Error al registrar los datos, no puede pedir más que las existencias de un producto']);
+                    }
+
+                    $lot->sold = $lot->sold + $v['sale'];
+                    $lot->save();
+
+                    $total = floatval($v->sale)*floatval($v->price[0]->price);
+
+                    if($v->price[0]->divisa==2){
+                        $bs  = $total*$dolar;
+                        $usd = $total;
+                    } else if($v->price[0]->divisa==1){
+                        $bs  = $total;
+                        $usd = $total/$dolar;
+                    }
+
+                    $last = LotToDiscount::create([
+                        'to_discount_id' => $toDiscount->id,
+                        'lot_id'         => $lot->id,
+                        'quantity'       => $v['sale'],
+                        'price_bs'       => $bs,
+                        'price_usd'      => $usd
+                    ]);
+
                 }
                 ProductTransaction::create(['product_id'=>$product->id,'transaction_id'=>$transaction->id,'quantity'=>$v['sale'],'price_usd'=>round($usd,2),'price_bs'=>round($bs,2)]);
             }

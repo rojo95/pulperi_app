@@ -63,6 +63,7 @@ Route::middleware(['valAuth'])->group(function(){
 
         // Rutas de inventario
         Route::post('/products', [InventoryController::class,'productByName'])->name('products');
+        Route::post('/products/lote', [InventoryController::class,'productByLote'])->name('products');
         Route::post('/prod', [InventoryController::class,'productById'])->name('prod');
         Route::resource('/inventory', InventoryController::class)->names('invntry');
 

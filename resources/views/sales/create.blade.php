@@ -99,10 +99,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <div class="row mt-3" id="name">
                                     <div class="col-md-10 offset-md-1">
                                         <div class="row">
-                                            <div class="col-sm-3 mt-1"><label for="producto"><h4 class="text-secondary">Producto:</h4></label></div>
+                                            <div class="col-sm-3 mt-1"><label for="producto"><h4 class="text-secondary">Nombre de Producto:</h4></label></div>
                                             <div class="col">
                                                 <div class="input-group ">
                                                     <div class="custom-file input-group-lg">
@@ -121,6 +121,36 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row mt-3" id="lote">
+                                    <div class="col-md-10 offset-md-1">
+                                        <div class="row">
+                                            <div class="col-sm-3 mt-1"><label for="producto"><h4 class="text-secondary">Lote de Producto:</h4></label></div>
+                                            <div class="col">
+                                                <div class="input-group ">
+                                                    <div class="custom-file input-group-lg">
+                                                        <input id="lot" type="text" class="form-control" placeholder="Buscar por Lote" autocomplete="off">
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-primary btn-sm disabled" type="button" id="searchProd" data-toggle="modal" data-target="#info" disabled="">
+                                                        <span class="material-icons">search</span>Buscar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class='col-md-9 offset-md-3 p-0'><p id="prods" class='error text-danger'></p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-sm-10 offset-md-1 d-flex">
+                                        <h4><strong>
+                                            Total:
+                                            <p id="total"></p>
+                                        </strong></h4>
+                                    </div>
+                                </div>
                                 <div class="row mt-3">
                                     <div class="col-sm-10 offset-md-1">
                                         <div class="table-responsive">
@@ -135,43 +165,6 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {{-- <tr>
-                                                        <td class="td-name">
-                                                            <div class="row">
-                                                                <div class="img-container d-none d-xs-none d-sm-block col">
-                                                                    <img class="img-thumbnail" src="https://static.turbosquid.com/Preview/2015/07/19__05_23_26/AssaultRifleAK473dmodel01.jpg3fe8ef2c-c44b-49e4-8643-f6e7db63dd45Large.jpg" alt="PRODUCTO">
-                                                                </div>
-                                                                <div class="col">
-                                                                    <strong class="text-primary">Ak-47</strong>
-                                                                    <br><small>by U.R.S.S.</small>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="td-number">
-                                                            <small>&#x20AC;</small>549
-                                                        </td>
-                                                        <td class="text-right">
-                                                            <div class="row">
-                                                                <div class="col-xs-12 col-sm-8 input-group offset-sm-4">
-                                                                    <div class="custom-file input-group-lg">
-                                                                        <input id="quantity" type="number" value="1" class="form-control" autocomplete="off" min="1" step="0.01">
-                                                                    </div>
-                                                                    <div class="input-group-append">
-                                                                        <button type="button" class="btn btn-round btn-info btn-sm less-prod"> <i class="material-icons">remove</i> </button>
-                                                                        <button type="button" class="btn btn-round btn-info btn-sm plus-prod"> <i class="material-icons">add</i> </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="td-number total">
-                                                            <small>&#x20AC;</small>549
-                                                        </td>
-                                                        <td class="td-actions">
-                                                            <button type="button" rel="tooltip" data-placement="left" title="Remove item" class="btn btn-danger">
-                                                                <i class="material-icons">close</i>
-                                                            </button>
-                                                        </td>
-                                                    </tr> --}}
                                                     <tr>
                                                         <td colspan="6">No se ha agregado ningún producto al carrito</td>
                                                     </tr>

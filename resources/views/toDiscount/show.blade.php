@@ -83,7 +83,7 @@
                                                 <tbody>
                                                     @foreach ($discount->todiscount as $item)
                                                     <tr>
-                                                        <td><strong class="text-primary">{{$item->LotToDiscount->products[0]->name}}</strong></td>
+                                                        <td><strong class="text-primary">{{$item->LotToDiscount->products->name}}</strong></td>
                                                         <td>{{$item->LotToDiscount->cod_lot}}</td>
                                                         <td>{{$item->quantity}}</td>
                                                         <td>{{$item->price_bs}} Bs. = {{$item->price_usd}} USD</td>

@@ -638,7 +638,6 @@ $(document).ready(function() {
                         dataType: 'json',
                         success: function(r) {
                             $('p.error').remove();
-                            console.log(r);
                             if(r.res==1) {
                                 SweetMessaje.fire({
                                     icon: "success",
@@ -684,7 +683,8 @@ $(document).ready(function() {
     var divproductos = $('.productos');
     var prodVenta = $('form#venta input#producto');
     var divModal = $('div#existencias-venta');
-    $('form#venta button#searchProd').click(function () {
+
+    $('div#name button#searchProd').click(function () {
         divloading.removeClass('d-block').addClass('d-none');
         divproductos.removeClass('d-none').addClass('d-block');
         var token = $('input[name="_token"]').val();
@@ -700,7 +700,6 @@ $(document).ready(function() {
             success: function (res) {
                 if(res.length>0){
                     divModal.html('');
-                    console.log(res);
                     $.each(res,function (i,r) {
                         divModal.append('<button type="button" value="'+r.id+'" class="list-group-item list-group-item-action btn-prod" data-dismiss="modal" '+ (r.quantity==0 ? "disabled" : "") +' ><strong class="text-primary">'+r.prod+'</strong>'+(r.quantity==0 ? '- <strong class="text-danger">AGOTADO</strong>' : '')+ '</button>')
                         // divModal.append('<button type="button" value="'+r.id+'" class="list-group-item list-group-item-action btn-prod" data-dismiss="modal" '+ (r.quantity==0 ? "disabled" : "") +' ><strong class="text-primary">'+r.prod+'</strong> - '+(r.quantity==0 ? '<strong class="text-danger">AGOTADO</strong>' : 'Existencia: '+r.quantity)+'</button>')
@@ -712,15 +711,48 @@ $(document).ready(function() {
         });
     });
 
+    $('input#lot').keyup(function(){
+        if($(this).val()!=''){
+            $('div#lote button#searchProd').removeAttr('disabled');
+        } else {
+            $('div#lote button#searchProd').attr('disabled','');
+        }
+    })
+    var loteProducto = {};
+
+    $('div#lote button#searchProd').click(function () {
+        var token = $('input[name="_token"]').val(),lote = $('input#lot').val();
+        divloading.removeClass('d-block').addClass('d-none');
+        divproductos.removeClass('d-none').addClass('d-block');
+        $.ajax({
+            type: "post",
+            url: "/products/lote",
+            data: {
+                info : prodVenta.val(),
+                "_token": token,
+                lote: lote
+            },
+            dataType: "json",
+            success: function (res) {
+                if(Object.keys(res).length!=0){
+                    divModal.html('');
+                    loteProducto = res;
+                    divModal.append('<button type="button" class="list-group-item list-group-item-action btn-lote" data-dismiss="modal" '+ (res.total<=0 ? "disabled" : "") +' ><strong class="text-primary">'+res.prod+'</strong>'+(res.total<=0 ? '- <strong class="text-danger">AGOTADO</strong>' : '')+ '</button>')
+                } else {
+                    divModal.html('<button type="button" disabled class="list-group-item list-group-item-action disabled">No hay registros disponibles de éste producto.</button>');
+                }
+            }
+        });
+    });
+
     $('div.modal button').click(function () {
         divproductos.removeClass('d-block').addClass('d-none');
         divloading.removeClass('d-none').addClass('d-block');
     });
 
     function prodCar(d) {
-        var table = $('table.table-shopping tbody');
-        var html = '';
-        console.log(d);
+        var table = $('table.table-shopping tbody'), html = '', totalTotal = {usd:0,bs:0};
+        $('p#total').html(totalTotal.usd+'USD / '+totalTotal.bs+'BS')
         $.each(d.reverse(), function (i, v) {
             var totalbs, totalusd, prcs,total='';
             if(v.price.length==1) {
@@ -738,6 +770,9 @@ $(document).ready(function() {
                     }
                 });
             }
+            totalTotal.usd = totalTotal.usd + totalusd;
+            totalTotal.bs = totalTotal.bs + totalbs;
+            $('p#total').html(totalTotal.usd+'USD / '+totalTotal.bs+'BS')
             html+='<tr id='+v.id+'>'
                     +'<td class="td-name">'
                         +'<div class="row">'
@@ -814,6 +849,33 @@ $(document).ready(function() {
                 console.log(xhr);
             }
         });
+    });
+
+    divModal.on('click','button.btn-lote', function () {
+        $('input#lot').val('');
+        var data = {
+            desc: loteProducto.desc,
+            existence:loteProducto.quantity-loteProducto.sold,
+            id: loteProducto.id,
+            img: loteProducto.img,
+            lot_id: loteProducto.lot_id,
+            dolar: dolar,
+            price:[
+                {
+                    divisa:loteProducto.divisa_id,
+                    selected:true,
+                    price: loteProducto.sell_price
+                }
+            ],
+            prod: loteProducto.prod,
+            sale: 1,
+            sale_measure:loteProducto.sales_measure_id,
+        }
+        console.log(data);
+        prods.push(data);
+        prodCar(prods);
+        divproductos.removeClass('d-block').addClass('d-none');
+        divloading.removeClass('d-none').addClass('d-block');
     });
 
     async function updateQuantityProd(number,input,id) {

@@ -22,7 +22,7 @@ class RoleHasPermissionSeeder extends Seeder
         // Supervisor
         $supervisor_permissions = $permissions->filter(function($permission){
             return substr($permission->name, 0, 4) == 'user' ||
-            (substr($permission->name, 0, 9) == 'inventory' && substr($permission->name, 0, 11) != 'inventory_d' && substr($permission->name, 0, 11) != 'inventory_c') ||
+            (substr($permission->name, 0, 9) == 'inventory' && substr($permission->name, 0, 11) != 'inventory_c') ||
             substr($permission->name, 0, 6) == 'client' ||
             (substr($permission->name, 0, 5) == 'debts' && substr($permission->name, 0, 7) != 'debts_p') ||
             (substr($permission->name, 0, 11) == 'to_discount' && substr($permission->name, 0, 13) != 'to_discount_c') ||
@@ -37,7 +37,7 @@ class RoleHasPermissionSeeder extends Seeder
             substr($permission->name, 0, 8) == 'client_s' ||
             substr($permission->name, 0, 8) == 'client_i' ||
             substr($permission->name, 0, 6) == 'sale_c' ||
-            substr($permission->name, 0, 6) == 'sale_s' ||
+            // substr($permission->name, 0, 6) == 'sale_s' ||
             substr($permission->name, 0, 11) == 'inventory_i' ||
             substr($permission->name, 0, 11) == 'inventory_s' ||
             substr($permission->name, 0, 5) == 'lot_i' ||
