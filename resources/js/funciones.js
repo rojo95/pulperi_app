@@ -702,7 +702,6 @@ $(document).ready(function() {
                     divModal.html('');
                     $.each(res,function (i,r) {
                         divModal.append('<button type="button" value="'+r.id+'" class="list-group-item list-group-item-action btn-prod" data-dismiss="modal" '+ (r.quantity==0 ? "disabled" : "") +' ><strong class="text-primary">'+r.prod+'</strong>'+(r.quantity==0 ? '- <strong class="text-danger">AGOTADO</strong>' : '')+ '</button>')
-                        // divModal.append('<button type="button" value="'+r.id+'" class="list-group-item list-group-item-action btn-prod" data-dismiss="modal" '+ (r.quantity==0 ? "disabled" : "") +' ><strong class="text-primary">'+r.prod+'</strong> - '+(r.quantity==0 ? '<strong class="text-danger">AGOTADO</strong>' : 'Existencia: '+r.quantity)+'</button>')
                     });
                 } else {
                     divModal.html('<button type="button" disabled class="list-group-item list-group-item-action disabled">No se consiguieron productos relacionados a los criterios de búsqueda</button>');
@@ -711,6 +710,7 @@ $(document).ready(function() {
         });
     });
 
+    // bloquear boton de busqueda por lote
     $('input#lot').keyup(function(){
         if($(this).val()!=''){
             $('div#lote button#searchProd').removeAttr('disabled');
@@ -853,6 +853,7 @@ $(document).ready(function() {
 
     divModal.on('click','button.btn-lote', function () {
         $('input#lot').val('');
+        $('div#lote button#searchProd').attr('disabled','');
         var data = {
             desc: loteProducto.desc,
             existence:loteProducto.quantity-loteProducto.sold,
@@ -871,7 +872,6 @@ $(document).ready(function() {
             sale: 1,
             sale_measure:loteProducto.sales_measure_id,
         }
-        console.log(data);
         prods.push(data);
         prodCar(prods);
         divproductos.removeClass('d-block').addClass('d-none');

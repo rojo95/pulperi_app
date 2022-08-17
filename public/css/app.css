@@ -228,7 +228,6 @@ select.selectpicker {
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 .bootstrap-select .dropdown-menu li a.opt {
@@ -431,7 +430,7 @@ span.text-danger.required {
     z-index: 999999;
     font-size: 25px !important;
     opacity: .5;
-    -moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+    -moz-user-select: none; -webkit-user-select: none; user-select:none;-o-user-select:none;
 }
 
 .permisos {
@@ -642,10 +641,6 @@ div.group-txt input.input-group-left {
 }
 
 div.group-txt input.input-group-left::-moz-placeholder {
-    color: #952daf;
-}
-
-div.group-txt input.input-group-left:-ms-input-placeholder {
     color: #952daf;
 }
 

@@ -10,9 +10,12 @@ use App\Models\PaymentMethod;
 use App\Models\PaymentMethodTransaction;
 use App\Models\Product;
 use App\Models\Lot;
+use App\Models\LotToDiscount;
 use App\Models\ProductTransaction;
+use App\Models\toDiscount;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserToDiscount;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -74,17 +77,11 @@ class SaleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\SaleStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(SaleStoreRequest $request)
     {
-        return response()->json($request->all());
-        die();
-        $own_roles = [];
-        foreach (Auth::user()->roles as $v) {
-            array_push($own_roles,$v->id);
-        }
         try {
             DB::beginTransaction();
             $user = User::find(Auth::user()->id);
@@ -97,6 +94,7 @@ class SaleController extends Controller
             }
             $total_prods = 0;
             foreach ($request->prods as $v) {
+
                 if($v['sale_measure']==1 && strpos($v['sale'],'.')) {
                     DB::rollBack();
                     return response()->json(['res'=>2,'info'=>'La cantidad de un producto a vender, posee un formato no permitido']);
@@ -118,7 +116,7 @@ class SaleController extends Controller
                         }
                     }
                 }
-                $total_prods = $total_prods+floatval($v['sale']);
+                $total_prods = $total_prods+floatval($sale);
                 if($divisa==1) {
                     $bs = $price;
                     $usd = $price/$request->usd;
@@ -128,26 +126,24 @@ class SaleController extends Controller
                 }
 
                 if($v['lot_id']){
+                    $dolar = intval($v['dolar']);
                     $lot = Lot::find($v['lot_id']);
-                    
+                    $toDiscount = toDiscount::create(['type_to_discount_id'=>1,'user_id'=>$user->id]);
+                    UserToDiscount::create(['user_id'=>$user->id,'to_discount_id'=>$toDiscount->id]);
 
-                    $toDiscount = toDiscount::create($request->only('type_to_discount_id')+['user_id'=>$user]);
-
-                    UserToDiscount::create(['user_id'=>auth()->user()->id,'to_discount_id'=>$toDiscount->id]);
-
-                    if ($v['sale'] > ($lot->quantity)-($lot->sold)) {
+                    if ($sale > ($lot->quantity)-($lot->sold)) {
                         return response()->json(['res'=>2,'info'=>'Error al registrar los datos, no puede pedir más que las existencias de un producto']);
                     }
 
-                    $lot->sold = $lot->sold + $v['sale'];
+                    $lot->sold = $lot->sold + $sale;
                     $lot->save();
 
-                    $total = floatval($v->sale)*floatval($v->price[0]->price);
+                    $total = $sale*floatval($v['price'][0]['price']);
 
-                    if($v->price[0]->divisa==2){
+                    if($v['price'][0]['divisa']==2){
                         $bs  = $total*$dolar;
                         $usd = $total;
-                    } else if($v->price[0]->divisa==1){
+                    } else if($v['price'][0]['divisa']==1){
                         $bs  = $total;
                         $usd = $total/$dolar;
                     }
@@ -155,34 +151,28 @@ class SaleController extends Controller
                     $last = LotToDiscount::create([
                         'to_discount_id' => $toDiscount->id,
                         'lot_id'         => $lot->id,
-                        'quantity'       => $v['sale'],
+                        'quantity'       => $sale,
                         'price_bs'       => $bs,
                         'price_usd'      => $usd
                     ]);
-
                 }
-                ProductTransaction::create(['product_id'=>$product->id,'transaction_id'=>$transaction->id,'quantity'=>$v['sale'],'price_usd'=>round($usd,2),'price_bs'=>round($bs,2)]);
+                ProductTransaction::create(['product_id'=>$product->id,'transaction_id'=>$transaction->id,'quantity'=>$sale,'price_usd'=>round($usd,2),'price_bs'=>round($bs,2)]);
             }
 
             if($request->transaction_type==2) {
                 $debt = Debt::where('client_id',$request->client_id)->where('status',true)->get()->last();
 
-
-
                 $amount_bs=$bs*floatval($total_prods);
                 $amount_usd=$usd*floatval($total_prods);
 
-                // $debt = $debt ? Debt::create($request->only('client_id')) : $debt;
-                if(!$debt) {
-                    $debt = Debt::create($request->only('client_id'));
-                }
-
+                $debt = !$debt ? Debt::create($request->only('client_id')) : $debt;
                 $data = [
                     'debt_id'=>$debt->id,
                     'amount_bs'=>$amount_bs,
                     'amount_usd'=>$amount_usd,
                     'movement_type'=>true
                 ];
+
                 $debtor_movement = DebtorMovement::create($data);
                 DebtorMovementTransaction::create(['transaction_id'=>$transaction->id,'debtor_movement_id'=>$debtor_movement->id]);
             }
@@ -228,7 +218,6 @@ class SaleController extends Controller
                     $transaction_bs = $transaction_bs+(floatval($value['price_bs'])*intval($value['quantity']));
                     $transaction_usd = $transaction_usd+(floatval($value['price_usd'])*intval($value['quantity']));
                 }
-                // dd($transaction->client->debts);
                 foreach ($transaction->client->debts as $v) {
                     if ($v->status) {
                         $debt = Debt::find($v['id']);
@@ -238,7 +227,6 @@ class SaleController extends Controller
                         }
                     }
                 }
-
                 $debt_movement = DebtorMovement::find($transaction->debtMovement->DebtorMovement->id);
                 $debt_movement->update(['status'=>false]);
                 if (($transaction_bs-$debt_bs<=0) && ($transaction_usd-$debt_usd<=0)) {
@@ -254,6 +242,10 @@ class SaleController extends Controller
         }
     }
 
+    /**
+     * show sales for week
+     * @param \Illuminate\Http\Request $res
+     */
     public function salesWeek(Request $res)
     {
         $id = empty($res->id) ? auth()->user()->id : Crypt::decrypt($res->id);
