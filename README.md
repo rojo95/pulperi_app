@@ -1,5 +1,5 @@
 # pulperi_app
-Sistema para la administración de un negocio pequeño, administrando ventas, inventario, retiro de inventario, administraciño y control de deudas.
+Sistema para la administración de un negocio pequeño, administrando ventas, inventario, retiro de inventario, administración y control de deudas.
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
